@@ -1,0 +1,27 @@
+{
+  "name": "fitness-tracker",
+  "version": "1.0.0",
+  "description": "A Fitness-Tracking-API",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon --env-file=.env server.js"
+  },
+  "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.5",
+        "express": "^5.2.1",
+        "http-errors": "^2.0.1",
+        "jsonwebtoken": "^9.0.3",
+        "mongodb": "^7.0.0",
+        "mongoose": "^9.1.4",
+        "zod": "^4.3.5"
+    },
+    "devDependencies": {
+        "colors": "^1.4.0",
+        "nodemon": "^3.1.11"
+    },
+  "keywords": [],
+  "author": "Raghav Mishra",
+  "license": "ISC"
+}
