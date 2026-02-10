@@ -6,6 +6,7 @@ import errorHandler from "./middlewares/errorHandler.js";
 import logger from "./middlewares/logger.js";
 import apiRouter from "./routes/index.js";
 import userRoutes from "./routes/api/userRoutes.js";
+import workoutRoutes from "./routes/api/workoutRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -19,6 +20,7 @@ app.use(logger);
 // routes
 app.use("/api", apiRouter);
 app.use("/api/user", userRoutes);
+app.use("/api/workout", workoutRoutes);
 
 app.use(notFound);
 

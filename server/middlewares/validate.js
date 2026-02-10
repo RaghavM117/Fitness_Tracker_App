@@ -1,5 +1,3 @@
-import { safeParse } from "zod/v4/core";
-
 export const validate =
     (schema, property = "body") =>
     (req, res, next) => {
