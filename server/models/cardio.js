@@ -18,19 +18,34 @@ const cardioSchema = new Schema(
             maxlength: 255,
         },
         duration: {
-            type: Number,
-            required: true,
-            min: 0,
+            value: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            unit: {
+                type: String,
+                required: true,
+                enum: ["s", "min", "h"],
+                default: "min",
+            },
         },
         distance: {
-            type: Number,
-            required: true,
-            min: 0,
+            value: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            unit: {
+                type: String,
+                required: true,
+                enum: ["km", "miles", "m"],
+                default: "m",
+            },
         },
         date: {
             type: Date,
             default: Date.now,
-            required: true,
         },
         user: {
             type: ObjectId,

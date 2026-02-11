@@ -13,7 +13,7 @@ export const validate =
                 });
             }
 
-            req.property = result.data;
+            req[property] = result.data;
             next();
         } catch (err) {
             next(err);

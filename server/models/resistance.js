@@ -18,11 +18,17 @@ const resistanceSchema = new Schema(
             maxlength: 255,
         },
         weight: {
-            type: Number,
-            required: true,
-            enum: ["kg,", "lbs"],
-            default: "kg",
-            min: 0,
+            value: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            unit: {
+                type: String,
+                required: true,
+                enum: ["kg", "lbs"],
+                default: "kg",
+            },
         },
         sets: {
             type: Number,
@@ -37,7 +43,6 @@ const resistanceSchema = new Schema(
         date: {
             type: Date,
             default: Date.now,
-            required: true,
         },
         user: {
             type: ObjectId,
