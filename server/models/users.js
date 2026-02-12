@@ -34,18 +34,6 @@ const userSchema = new Schema(
             enum: ["user", "admin"],
             default: "user",
         },
-        cardio: [
-            {
-                type: ObjectId,
-                ref: "Cardio",
-            },
-        ],
-        resistance: [
-            {
-                type: ObjectId,
-                ref: "Resistance",
-            },
-        ],
     },
     { timestamps: true, versionKey: false },
 );

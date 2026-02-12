@@ -27,18 +27,21 @@ export const patchResistanceSchema = postResistanceSchema
         message: "At least one field must be provided for update",
     });
 
-export const getWorkoutQuerySchema = z.object({
-    // validating query logic for both resistances and query
-    name: z.string().trim().min(2).max(1000).optional(),
-    sort: z.enum(["asc", "desc"]).default("desc"),
-    from: z.coerce.date().optional(),
-    to: z.coerce.date().optional(),
-    before: z.coerce.date().optional(),
-    after: z.coerce.date().optional(),
-    // pagination: always good for performance
-    limit: z.coerce.number().int().positive().default(10),
-    page: z.coerce.number().int().positive().default(1),
-});
+export const getWorkoutQuerySchema = z
+    .object({
+        // validating query logic for both resistances and query
+        name: z.string().trim().min(2).max(1000).optional(),
+        sort: z.enum(["asc", "desc"]).default("desc"),
+        from: z.coerce.date().optional(),
+        to: z.coerce.date().optional(),
+        // pagination: always good for performance
+        limit: z.coerce.number().int().positive().max(100).default(10),
+        page: z.coerce.number().int().positive().default(1),
+    })
+    .strict()
+    .refine((data) => !data.from || !data.to || data.from >= data.to, {
+        message: "Invalid Data Range",
+    });
 
 // zod validation for cardio
 export const postCardioSchema = z

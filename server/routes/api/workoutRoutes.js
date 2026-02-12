@@ -4,7 +4,24 @@ import validate from "../../middlewares/validate";
 import {
     getWorkoutQuerySchema,
     workoutId,
+    postResistanceSchema,
+    patchResistanceSchema,
+    postCardioSchema,
+    patchCardioSchema,
 } from "../../validation/workoutSchema";
+import { getCardioQuery, getResistanceQuery } from "../../utils/workoutQuery";
+import {
+    postResistance,
+    getAllResistance,
+    getResistance,
+    patchResistance,
+    deleteResistance,
+    postCardio,
+    getAllCardio,
+    getCardio,
+    patchCardio,
+    deleteCardio,
+} from "../../controllers/workoutController.js";
 
 const router = Router();
 
@@ -13,13 +30,13 @@ router
     .route("/resistance")
     .all(auth)
     .post(validate(postResistanceSchema), postResistance)
-    .get(validate(getWorkoutQuerySchema, "query"), getResistances); // to create and get all resistances also using query logic
-
+    .get(validate(getWorkoutQuerySchema, "query"), getResistanceQuery) // to create and get all resistances also using query logic
+    .get(getAllResistance);
 router // crud for resistance except create so rud
     .route("resistance/:id")
     .all(auth, validate(workoutId, "params"))
     .get(getResistance)
-    .patch(validate(patchResistanceSchema))
+    .patch(validate(patchResistanceSchema), patchResistance)
     .delete(deleteResistance);
 
 //cardio Routes
@@ -27,14 +44,15 @@ router
     .route("/cardio")
     .all(auth)
     .post(validate(postCardioSchema), postCardio)
-    .get(validate(getWorkoutQuerySchema, "query"), getCardios);
+    .get(validate(getWorkoutQuerySchema, "query"), getCardioQuery)
+    .get(getAllCardio);
 
 //crud for cardio again except created so rud
 router
     .route("/cardio/:id")
     .all(auth, validate(workoutId, "params"))
     .get(getCardio)
-    .patch(validate(patchCardioSchema))
+    .patch(validate(patchCardioSchema), patchCardio)
     .delete(deleteCardio);
 
 export default router;

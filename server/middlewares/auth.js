@@ -7,7 +7,7 @@ const secret_key = process.env.JWT_SECRET;
 const auth = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startWith("Bearer ")) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
             throw createHttpError(401, "Authentication Required");
         }
 

@@ -1,37 +1,196 @@
-// just the logic for now
-// important always scope to logged in user so example for findAll or finding single
-//
-// const workouts = await Cardio.find({ user: req.user._id }); // for findAll
-// const workout = await Cardio.findOne({
-//   _id: req.params.id,
-//   user: req.user._id
-// }); // for single to avoid other users from accessing each other's data
-//
-//
-// also optional but supportive query fiter logic
-//
-//export const getCardio = async (req, res, next) => {
-//   try {
-//     const { startDate, endDate, sort, limit } = req.query;
+import createHttpError from "http-errors";
+import { Cardio, Resistance } from "../models/index.js";
 
-//     const filter = { user: req.user._id };
+// crud logic for Resistance
+export const postResistance = async (req, res, next) => {
+    try {
+        const resistance = await Resistance.create({
+            ...req.body,
+            user: req.user._id,
+        });
 
-//     if (startDate || endDate) {
-//       filter.date = {};
-//       if (startDate) filter.date.$gte = new Date(startDate);
-//       if (endDate) filter.date.$lte = new Date(endDate);
-//     }
+        res.status(201).json({
+            success: true,
+            message: "Resistance Created Successfully",
+            data: resistance,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
-//     let query = Cardio.find(filter);
+export const getResistance = async (req, res, next) => {
+    try {
+        const readResistance = await Resistance.findOne({
+            _id: req.params.id,
+            user: req.user._id,
+        });
 
-//     if (sort) query = query.sort(sort);
-//     if (limit) query = query.limit(Number(limit));
+        if (!readResistance) {
+            return next(createHttpError(404, "Resistance not Found"));
+        }
 
-//     const workouts = await query;
+        res.status(200).json({
+            success: true,
+            message: "Resistance Found Successfully",
+            data: readResistance,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
-//     res.status(200).json(workouts);
+export const getAllResistance = async (req, res, next) => {
+    try {
+        const readAllResistance = await Resistance.find({ user: req.user._id });
 
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+        res.status(200).json({
+            success: true,
+            message: "All Resistance Found Successfully",
+            data: readAllResistance,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const patchResistance = async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const updatedResistance = await Resistance.findOneAndUpdate(
+            { _id: id, user: req.user._id },
+            req.body,
+            { new: true, runValidators: true },
+        );
+
+        if (!updatedResistance) {
+            return next(createHttpError(404, "Resistance not found"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Resistance Updated Successfully",
+            data: updatedResistance,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteResistance = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const deletedResistance = await Resistance.findOneAndDelete({
+            _id: id,
+            user: req.user._id,
+        });
+
+        if (!deletedResistance) {
+            return next(createHttpError(404, "Resistance not found"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Resistance Deleted Successfully",
+            data: deletedResistance,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// crud logic for cardio
+export const postCardio = async (req, res, next) => {
+    try {
+        const cardio = await Cardio.create({
+            ...req.body,
+            user: req.user._id,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Cardio Created Successfully",
+            data: cardio,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getCardio = async (req, res, next) => {
+    try {
+        const cardio = await Cardio.findOne({
+            _id: req.params.id,
+            user: req.user._id,
+        });
+
+        if (!cardio) {
+            return next(createHttpError(404, "Cardio not found"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Cardio Retrieved Successfully",
+            data: cardio,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getAllCardio = async (req, res, next) => {
+    try {
+        const cardio = await Cardio.find({ user: req.user._id });
+
+        res.status(200).json({
+            success: true,
+            message: "Cardio Retrieved Successfully",
+            data: cardio,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const patchCardio = async (req, res, next) => {
+    try {
+        const updatedCardio = await Cardio.findOneAndUpdate(
+            { _id: req.params.id, user: req.user._id },
+            ...req.body,
+            { new: true, runValidators: true },
+        );
+        if (!updatedCardio) {
+            return next(createHttpError(404, "Cardio not found"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Cardio Updated Successfully",
+            data: updatedCardio,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteCardio = async (req, res, next) => {
+    try {
+        const deletedCardio = await Cardio.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user._id,
+        });
+
+        if (!deletedCardio) {
+            return next(createHttpError(404, "Cardio not found"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Cardio Retrieved Successfully",
+            data: deletedCardio,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
