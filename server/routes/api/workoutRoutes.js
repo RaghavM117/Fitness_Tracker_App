@@ -9,7 +9,10 @@ import {
     postCardioSchema,
     patchCardioSchema,
 } from "../../validation/workoutSchema";
-import { getCardioQuery, getResistanceQuery } from "../../utils/workoutQuery";
+import {
+    getCardioQuery,
+    getResistanceQuery,
+} from "../../utils/workoutQuery.js";
 import {
     postResistance,
     getAllResistance,
