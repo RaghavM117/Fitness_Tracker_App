@@ -42,21 +42,6 @@ export const getResistance = async (req, res, next) => {
     }
 };
 
-// export const getAllResistance = async (req, res, next) => {
-//     try {
-//         const userId = req.user._id;
-//         const readAllResistance = await Resistance.find({ user: userId });
-
-//         res.status(200).json({
-//             success: true,
-//             message: "All Resistance Found Successfully",
-//             data: readAllResistance,
-//         });
-//     } catch (err) {
-//         next(err);
-//     }
-// };
-
 export const patchResistance = async (req, res, next) => {
     const userId = req.user._id;
     const { id } = req.params;
@@ -145,21 +130,6 @@ export const getCardio = async (req, res, next) => {
         next(err);
     }
 };
-
-// export const getAllCardio = async (req, res, next) => {
-//     try {
-//         const userId = req.user._id;
-//         const cardio = await Cardio.find({ user: userId });
-
-//         res.status(200).json({
-//             success: true,
-//             message: "Cardio Retrieved Successfully",
-//             data: cardio,
-//         });
-//     } catch (err) {
-//         next(err);
-//     }
-// };
 
 export const patchCardio = async (req, res, next) => {
     try {
