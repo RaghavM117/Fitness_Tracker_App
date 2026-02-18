@@ -51,12 +51,20 @@ const resistanceSchema = new Schema(
             index: true,
         },
     },
-    { timestamps: true, versionKey: false },
+    {
+        timestamps: true,
+        versionKey: false,
+        toJSON: { virtuals: true, id: false },
+        toObject: { virtuals: true, id: false },
+        id: false,
+    },
 );
 
 // to automatically include total weights lifted after each workout
 resistanceSchema.virtual("volume").get(function () {
-    return this.weight * this.sets * this.reps;
+    if (this.weight && typeof this.weight.value === "number") {
+        return this.weight.value * this.sets * this.reps;
+    }
 });
 
 // Optimizing user workout history queries

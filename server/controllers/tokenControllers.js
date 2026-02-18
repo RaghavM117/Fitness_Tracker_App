@@ -1,4 +1,4 @@
-import signAccessToken from "../utils/jwtGeneration";
+import signAccessToken from "../utils/jwtGeneration.js";
 
 export const sendAuthTokens = (req, res, next) => {
     try {

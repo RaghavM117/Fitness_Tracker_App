@@ -1,13 +1,5 @@
-import { Router } from "express";
-import validate from "../../middlewares/validate.js";
+import express from "express";
 import auth from "../../middlewares/auth.js";
-import { sendAuthTokens } from "../../controllers/tokenControllers.js";
-import {
-    registerSchema,
-    loginSchema,
-    passwordSchema,
-} from "../../validation/authSchema.js";
-import { registerUser, logIn } from "../../controllers/authControllers.js";
 import {
     changePassword,
     getUserProfile,
@@ -15,15 +7,14 @@ import {
     deleteUser,
 } from "../../controllers/userControllers.js";
 import { patchUserSchema } from "../../validation/userSchema.js";
+import { registerUser, logIn } from "../../controllers/authControllers.js"
+import {validate} from "../../middlewares/validate.js"
+import {registerSchema, loginSchema, passwordSchema} from "../../validation/authSchema.js"
+import {sendAuthTokens} from "../../controllers/tokenControllers.js";
 
-const router = Router();
+const router = express.Router();
 
-router.post(
-    "/register",
-    validate(registerSchema),
-    registerUser,
-    sendAuthTokens,
-);
+router.post("/register",validate(registerSchema),registerUser,sendAuthTokens);
 
 router.post("/login", validate(loginSchema), logIn, sendAuthTokens);
 

@@ -4,9 +4,9 @@ import { User } from "../models/index.js";
 
 export const getUserProfile = async (req, res, next) => {
     try {
-        const { userId } = req.user._id;
+        const { _id: userId } = req.user;
 
-        const user = await User.findById({ userId });
+        const user = await User.findById(userId);
 
         if (!user) {
             return next(createHttpError(404, "User not Found"));
@@ -25,20 +25,28 @@ export const getUserProfile = async (req, res, next) => {
 export const changePassword = async (req, res, next) => {
     try {
         const { currentPassword, newPassword } = req.body;
-        const { userId } = req.user._id;
+        const { _id: userId } = req.user;
 
-        const user = await User.findById({ userId }).select("+password");
+        const user = await User.findById(userId).select("+password");
 
-        const isPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!user) {
+            return next(createHttpError(404, "User not found"));
+        }
 
-        if (!isPassword) {
+        const isPasswordValid = await bcrypt.compare(
+            currentPassword,
+            user.password,
+        );
+
+        if (!isPasswordValid) {
             return next(createHttpError(400, "Invalid Password"));
         }
 
-        user.password = bcrypt.hash(newPassword, 10);
+        user.password = newPassword;
+
         await user.save();
 
-        res.send(200).json({
+        res.status(200).json({
             success: true,
             message: "Password Updated Successfully!",
         });
@@ -49,10 +57,14 @@ export const changePassword = async (req, res, next) => {
 
 export const patchUser = async (req, res, next) => {
     try {
+        const { _id: userId } = req.user;
         const updatedUser = await User.findByIdAndUpdate(
-            req.user._id,
-            req.body,
-            { new: true, runValidators: true },
+            userId,
+            { name: req.body.username, email: req.body.email },
+            {
+                new: true,
+                runValidators: true,
+            },
         );
 
         if (!updatedUser) {
@@ -71,7 +83,16 @@ export const patchUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
     try {
-        const { userId } = req.user._id;
+        const { _id: userId } = req.user;
+        const { confirm } = req.body || {}; // Look for a confirmation in the body
+
+        if (!confirm) {
+            return res.status(200).json({
+                success: false,
+                message:
+                    "Are you sure? Please send 'confirm: true' to delete your profile permanently.",
+            });
+        }
 
         const user = await User.findByIdAndDelete(userId);
 

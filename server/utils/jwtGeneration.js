@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 
 const access_secret = process.env.JWT_SECRET;
 
-const signAccessToken = (userId, role) => {
+export const signAccessToken = (userId, role) => {
     if (!access_secret) {
         throw createHttpError(500, "Access token Secret key missing!");
     }

@@ -2,31 +2,42 @@ import { Resistance, Cardio } from "../models/index.js";
 
 const workoutQuery = (Model) => async (req, res, next) => {
     try {
-        const { name, from, to, sort, limit, page } = req.query;
+        // Destructure with default fallbacks for pagination
+        // This ensures (page - 1) * limit never results in NaN
+        const {
+            name,
+            from,
+            to,
+            sort = "desc",
+            limit = 10,
+            page = 1,
+        } = req.query;
 
         const filter = { user: req.user._id };
 
-        // name filtering
         if (name) {
             filter.name = { $regex: name, $options: "i" };
         }
 
-        // date filtering
         if (from || to) {
             filter.date = {};
-            if (from) filter.date.$gte = from;
-            if (to) filter.date.$lte = to;
+            if (from) filter.date.$gte = new Date(from);
+            if (to) filter.date.$lte = new Date(to);
         }
 
-        const skip = (page - 1) * limit;
+        // Ensure limit and page are treated as numbers
+        const limitVal = parseInt(limit);
+        const pageVal = parseInt(page);
+        const skip = (pageVal - 1) * limitVal;
 
         const data = await Model.find(filter)
             .sort({ date: sort === "asc" ? 1 : -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limitVal);
 
         res.status(200).json({
             success: true,
+            count: data.length,
             data,
         });
     } catch (err) {

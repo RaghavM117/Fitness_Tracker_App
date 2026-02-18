@@ -4,9 +4,10 @@ import { Cardio, Resistance } from "../models/index.js";
 // crud logic for Resistance
 export const postResistance = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const resistance = await Resistance.create({
             ...req.body,
-            user: req.user._id,
+            user: userId,
         });
 
         res.status(201).json({
@@ -21,9 +22,10 @@ export const postResistance = async (req, res, next) => {
 
 export const getResistance = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const readResistance = await Resistance.findOne({
             _id: req.params.id,
-            user: req.user._id,
+            user: userId,
         });
 
         if (!readResistance) {
@@ -40,26 +42,28 @@ export const getResistance = async (req, res, next) => {
     }
 };
 
-export const getAllResistance = async (req, res, next) => {
-    try {
-        const readAllResistance = await Resistance.find({ user: req.user._id });
+// export const getAllResistance = async (req, res, next) => {
+//     try {
+//         const userId = req.user._id;
+//         const readAllResistance = await Resistance.find({ user: userId });
 
-        res.status(200).json({
-            success: true,
-            message: "All Resistance Found Successfully",
-            data: readAllResistance,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
+//         res.status(200).json({
+//             success: true,
+//             message: "All Resistance Found Successfully",
+//             data: readAllResistance,
+//         });
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 export const patchResistance = async (req, res, next) => {
+    const userId = req.user._id;
     const { id } = req.params;
 
     try {
         const updatedResistance = await Resistance.findOneAndUpdate(
-            { _id: id, user: req.user._id },
+            { _id: id, user: userId },
             req.body,
             { new: true, runValidators: true },
         );
@@ -79,11 +83,12 @@ export const patchResistance = async (req, res, next) => {
 };
 
 export const deleteResistance = async (req, res, next) => {
+    const userId = req.user._id;
     const { id } = req.params;
     try {
         const deletedResistance = await Resistance.findOneAndDelete({
             _id: id,
-            user: req.user._id,
+            user: userId,
         });
 
         if (!deletedResistance) {
@@ -103,9 +108,10 @@ export const deleteResistance = async (req, res, next) => {
 // crud logic for cardio
 export const postCardio = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const cardio = await Cardio.create({
             ...req.body,
-            user: req.user._id,
+            user: userId,
         });
 
         res.status(201).json({
@@ -120,9 +126,10 @@ export const postCardio = async (req, res, next) => {
 
 export const getCardio = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const cardio = await Cardio.findOne({
             _id: req.params.id,
-            user: req.user._id,
+            user: userId,
         });
 
         if (!cardio) {
@@ -139,25 +146,27 @@ export const getCardio = async (req, res, next) => {
     }
 };
 
-export const getAllCardio = async (req, res, next) => {
-    try {
-        const cardio = await Cardio.find({ user: req.user._id });
+// export const getAllCardio = async (req, res, next) => {
+//     try {
+//         const userId = req.user._id;
+//         const cardio = await Cardio.find({ user: userId });
 
-        res.status(200).json({
-            success: true,
-            message: "Cardio Retrieved Successfully",
-            data: cardio,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
+//         res.status(200).json({
+//             success: true,
+//             message: "Cardio Retrieved Successfully",
+//             data: cardio,
+//         });
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 export const patchCardio = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const updatedCardio = await Cardio.findOneAndUpdate(
-            { _id: req.params.id, user: req.user._id },
-            ...req.body,
+            { _id: req.params.id, user: userId },
+            req.body,
             { new: true, runValidators: true },
         );
         if (!updatedCardio) {
@@ -176,9 +185,10 @@ export const patchCardio = async (req, res, next) => {
 
 export const deleteCardio = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const deletedCardio = await Cardio.findOneAndDelete({
             _id: req.params.id,
-            user: req.user._id,
+            user: userId,
         });
 
         if (!deletedCardio) {
@@ -187,7 +197,7 @@ export const deleteCardio = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Cardio Retrieved Successfully",
+            message: "Cardio Deleted Successfully",
             data: deletedCardio,
         });
     } catch (err) {

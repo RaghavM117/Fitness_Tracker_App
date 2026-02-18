@@ -8,15 +8,22 @@ export const validate =
                 return res.status(400).json({
                     success: false,
                     message: {
-                        errors: result.errors.issues.map((e) => e.message),
+                        errors: result.error.issues.map((e) => e.message),
                     },
                 });
             }
 
-            req[property] = result.data;
+            // fix for the read query property - since query is only a read-only property express will throw a error if trying to write
+            if (property === "query") {
+                for (const key in req.query) delete req.query[key];
+                Object.assign(req.query, result.data);
+            } else {
+                req[property] = result.data;
+            }
+
             next();
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
     };
 

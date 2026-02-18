@@ -9,10 +9,12 @@ export const postResistanceSchema = z
             value: z.coerce
                 .number()
                 .nonnegative()
-                .min(0, "Weight Cannot be Negative"),
+                .min(0, "Weight Cannot be Negative")
+                .optional(),
             unit: z
                 .enum(["kg", "lbs"], { message: "Invalid Weight Unit" })
-                .default("kg"),
+                .default("kg")
+                .optional(),
         }),
         sets: z.coerce.number().nonnegative().min(1, "Set must be at least 1"),
         reps: z.coerce.number().nonnegative().min(1, "Reps must be at least 1"),
@@ -39,7 +41,7 @@ export const getWorkoutQuerySchema = z
         page: z.coerce.number().int().positive().default(1),
     })
     .strict()
-    .refine((data) => !data.from || !data.to || data.from >= data.to, {
+    .refine((data) => !data.from || !data.to || data.from <= data.to, {
         message: "Invalid Data Range",
     });
 
@@ -52,21 +54,25 @@ export const postCardioSchema = z
             value: z.coerce
                 .number()
                 .nonnegative()
-                .min(1, "Duration Cannot be Negative"),
+                .min(1, "Duration Cannot be Negative")
+                .optional(),
             unit: z
                 .enum(["s", "min", "h"], { message: "Invalid Duration Unit" })
-                .default("min"),
+                .default("min")
+                .optional(),
         }),
         distance: z.object({
             value: z.coerce
                 .number()
                 .nonnegative()
-                .min(1, "Distance Cannot be Negative"),
+                .min(1, "Distance Cannot be Negative")
+                .optional(),
             unit: z
                 .enum(["m", "km", "miles"], {
                     message: "Invalid Distance Unit",
                 })
-                .default("m"),
+                .default("m")
+                .optional(),
         }),
         date: z.coerce.date().optional(),
     })

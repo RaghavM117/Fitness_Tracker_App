@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const { Schema } = mongoose;
-const { ObjectId } = Schema.Types;
 
 const userSchema = new Schema(
     {
@@ -38,11 +37,11 @@ const userSchema = new Schema(
     { timestamps: true, versionKey: false },
 );
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {

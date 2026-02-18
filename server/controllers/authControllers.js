@@ -14,12 +14,12 @@ export const registerUser = async (req, res, next) => {
             return next(createHttpError(409, "User Already Exists"));
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
             name: username,
             email,
-            password: hashedPassword,
+            password: password,
         });
 
         req.user = user; //stored or attaching mongodB user
@@ -48,7 +48,8 @@ export const logIn = async (req, res, next) => {
             return next(createHttpError(401, "Invalid Credentials"));
         }
 
-        req.user = user; // storing or attaching mongoDB user
+        req.user = user;
+        req.authAction = "login"; // storing or attaching mongoDB user
         next();
     } catch (err) {
         next(err);

@@ -54,8 +54,29 @@ const cardioSchema = new Schema(
             index: true,
         },
     },
-    { timestamps: true, versionKey: false },
+    {
+        timestamps: true,
+        versionKey: false,
+        toJSON: {
+            virtuals: true,
+            id: false, // Prevents the duplicate id field
+        },
+        toObject: {
+            virtuals: true,
+            id: false,
+        },
+        id: false,
+    },
 );
+
+// to get the distance and duration
+cardioSchema.virtual("pace").get(function () {
+    if (this.duration?.value && this.distance?.value) {
+        const paceValue = this.duration.value / this.distance.value;
+        return paceValue.toFixed(2);
+    }
+    return 0;
+});
 
 // compounding index for faster user-date queries
 cardioSchema.index({ user: 1, date: -1 });
