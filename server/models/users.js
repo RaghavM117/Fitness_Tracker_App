@@ -26,8 +26,24 @@ const userSchema = new Schema(
             minlength: 8,
             maxlength: 100,
             select: false,
-            required: true,
+            required: () => {
+                // Only require Password if no Google or Github Id is Present
+                return !this.googleId && !this.githubId;
+            },
         },
+        // Provider Specific-Id
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true,
+        },
+        githubId: {
+            type: String,
+            unique: true,
+            sparse: true,
+        },
+        displayName: String,
+        avatar: String,
         role: {
             type: String,
             enum: ["user", "admin"],
@@ -36,7 +52,6 @@ const userSchema = new Schema(
     },
     { timestamps: true, versionKey: false },
 );
-
 
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;

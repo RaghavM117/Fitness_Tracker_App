@@ -72,10 +72,16 @@ const cardioSchema = new Schema(
 // to get the distance and duration
 cardioSchema.virtual("pace").get(function () {
     if (this.duration?.value && this.distance?.value) {
-        const paceValue = this.duration.value / this.distance.value;
-        return paceValue.toFixed(2);
+        const paceValue = (this.duration.value / this.distance.value).toFixed(
+            2,
+        );
+
+        const timeUnit = this.duration.unit || "min";
+        const distUnit = this.distance.unit || "m";
+
+        return `${paceValue} ${timeUnit}/${distUnit}`;
     }
-    return 0;
+    return "0 units";
 });
 
 // compounding index for faster user-date queries

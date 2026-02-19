@@ -62,9 +62,13 @@ const resistanceSchema = new Schema(
 
 // to automatically include total weights lifted after each workout
 resistanceSchema.virtual("volume").get(function () {
-    if (this.weight && typeof this.weight.value === "number") {
-        return this.weight.value * this.sets * this.reps;
+    if (this.weight?.value && this.sets && this.reps) {
+        const totalVolume = this.weight.value * this.sets * this.reps;
+        const unit = this.weight.unit || "kg";
+
+        return `${totalVolume} ${unit}`;
     }
+    return "0 units";
 });
 
 // Optimizing user workout history queries

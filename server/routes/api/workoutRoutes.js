@@ -33,11 +33,10 @@ router
     .route("/resistance")
     .all(auth)
     .post(validate(postResistanceSchema), postResistance)
-    // .get(getAllResistance)
     .get(validate(getWorkoutQuerySchema, "query"), getResistanceQuery); // to create and get all resistances also using query logic
 
 router // crud for resistance except create so rud
-    .route("resistance/:id")
+    .route("/resistance/:id")
     .all(auth, validate(workoutId, "params"))
     .get(getResistance)
     .patch(validate(patchResistanceSchema), patchResistance)
@@ -48,7 +47,6 @@ router
     .route("/cardio")
     .all(auth)
     .post(validate(postCardioSchema), postCardio)
-    // .get(getAllCardio)
     .get(validate(getWorkoutQuerySchema, "query"), getCardioQuery);
 
 //crud for cardio again except created so rud

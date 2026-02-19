@@ -4,7 +4,7 @@ import z from "zod";
 export const postResistanceSchema = z
     .object({
         name: z.string().trim().min(2).max(100),
-        description: z.string().trim().min(20).max(255),
+        description: z.string().trim().min(10).max(255),
         weight: z.object({
             value: z.coerce
                 .number()
