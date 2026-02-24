@@ -14,8 +14,6 @@ export const registerUser = async (req, res, next) => {
             return next(createHttpError(409, "User Already Exists"));
         }
 
-        // const hashedPassword = await bcrypt.hash(password, 10);
-
         const user = await User.create({
             name: username,
             email,
@@ -54,4 +52,26 @@ export const logIn = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+};
+
+export const logout = async (req, res) => {
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        sameSite: "Strict",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+    });
+
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        sameSite: "Strict",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+    });
+
+    req.authAction = "logout";
+    res.status(200).json({
+        success: true,
+        message: "Logged Out Successfully!",
+    });
 };

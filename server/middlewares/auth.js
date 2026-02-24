@@ -6,12 +6,17 @@ const secret_key = process.env.JWT_SECRET;
 
 const auth = async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            throw createHttpError(401, "Authentication Required");
+        let token;
+
+        if (req.headers.authorization?.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+        } else if (req.cookies?.accessToken) {
+            token = req.cookies.accessToken;
         }
 
-        const token = authHeader.split(" ")[1];
+        if (!token) {
+            return next(createHttpError(401, "Authentication Required"));
+        }
 
         const decoded = jwt.verify(token, secret_key);
 

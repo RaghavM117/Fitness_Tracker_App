@@ -15,55 +15,55 @@ export const registerSchema = z
             .toLowerCase()
             .trim()
             .pipe(z.email({ message: "Invalid Email Address" })),
-        password: z
-            .string()
-            .trim()
-            .min(8)
-            .max(100)
-            .regex(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                {
-                    message:
-                        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-                },
-            )
-            .optional(),
-        provider: z
-            .enum(["google", "github", "local"])
-            .default("local")
-            .optional(),
+        password: z.string().trim().optional(),
+        provider: z.enum(["github", "local"]).default("local").optional(),
         providerId: z.string().optional(),
         role: z.enum(["user", "admin"]).default("user").optional(),
     })
     .strict()
     .refine(
         (data) => {
-            if (data.provider === "local" && !data.password) return false;
-            return true;
+            if (data.provider === "local") {
+                const passwordRegex =
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+                return (
+                    data.password &&
+                    data.password.length >= 8 &&
+                    passwordRegex.test(data.password)
+                );
+            }
+            return true; // GitHub users pass through without a password
         },
         {
-            message: "Passord is required for local Authentication",
+            message:
+                "Password is required and must be strong for local registration",
             path: ["password"],
         },
     );
 
-export const loginSchema = z.object({
-    identifiers: z.string().trim().min(1).max(100),
-    password: z.string().trim().min(8),
-});
+export const loginSchema = z
+    .object({
+        identifiers: z.string().trim().min(1).max(100),
+        password: z.string().trim().min(8),
+    })
+    .strict();
 
-export const passwordSchema = z.object({
-    currentPassword: z.string().trim().min(8, "Current Password is Required!"),
-    newPassword: z
-        .string()
-        .trim()
-        .min(8, "New Password is Required!")
-        .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-            {
-                message:
-                    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-            },
-        )
-        .strict(),
-});
+export const passwordSchema = z
+    .object({
+        currentPassword: z
+            .string()
+            .trim()
+            .min(8, "Current Password is Required!"),
+        newPassword: z
+            .string()
+            .trim()
+            .min(8, "New Password is Required!")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                {
+                    message:
+                        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                },
+            ),
+    })
+    .strict();

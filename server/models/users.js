@@ -26,24 +26,31 @@ const userSchema = new Schema(
             minlength: 8,
             maxlength: 100,
             select: false,
-            required: () => {
-                // Only require Password if no Google or Github Id is Present
-                return !this.googleId && !this.githubId;
+            required: function () {
+                return !this.githubId;
             },
         },
-        // Provider Specific-Id
-        googleId: {
+        refreshToken: {
             type: String,
-            unique: true,
-            sparse: true,
+            select: false,
         },
+        // Provider Specific-Id
         githubId: {
             type: String,
             unique: true,
             sparse: true,
         },
-        displayName: String,
-        avatar: String,
+        provider: {
+            type: String,
+            enum: ["github", "local"],
+            default: "local",
+        },
+        avatar: {
+            type: String,
+            default: function () {
+                return `https://ui-avatars.com/api/?name=${encodeURIComponent(this.name)}&background=random`;
+            },
+        },
         role: {
             type: String,
             enum: ["user", "admin"],
